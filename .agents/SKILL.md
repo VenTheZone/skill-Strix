@@ -7,7 +7,7 @@ description: Autonomous AI penetration testing methodology — multi-agent orche
 
 ## Overview
 
-Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents run in sandboxed Docker with shared filesystem, proxy, and notes.
+Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents share one container and `/workspace`; each agent has its own terminal; the browser is shared unless `--session` is passed.
 
 Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 
@@ -21,43 +21,43 @@ Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 Root Agent (orchestrator, not tester)
 ├── Discovery Agent (surface mapping)
 ├── Validation Agent (PoC per finding)
-├── Reporting Agent (vuln report + remediation)
-└── [Whitebox only] Fixing Agent (patch generation)
+└── Reporting Agent (vuln report + remediation)
 ```
 
 - **Root**: coordinates, delegates, tracks todos/notes, monitors graph, writes final report. Never tests directly.
 - **Children**: one job per agent. Spawn reactively as surfaces discovered, not upfront.
 - **Blackbox chain**: Discovery → Validation → Reporting (3 agents/vuln)
-- **Whitebox chain**: + Fixing (4 agents/vuln)
+- **Whitebox chain**: same 3-agent chain; Reporting Agent files the fix inline. No fourth agent is added.
 
 ### Agent Creation
 
 - Single factory function handles root and child. Differ only in `is_root` flag.
 - **Root gets**: base tools + `finish_scan` lifecycle tool
 - **Child gets**: base tools + `agent_finish` lifecycle tool
-- **Base tools** (~30): think, load_skill, todos CRUD, notes CRUD, web_search, vuln reporting, proxy tools, agent graph tools (create_agent, send_message, wait_for_message, stop_agent)
+- **Base tools** (~30): think, load_skill, todos CRUD, notes CRUD, web_search, vuln reporting, proxy tools, agent graph tools (create_agent, send_message, wait_for_user, wait_for_agents, stop_agent)
 - **Sandbox tools**: shell + filesystem (emitted by SDK capabilities, bound to Docker session)
 
 ### Lifecycle Control
 
-- Agent loop only terminates when lifecycle tool returns `{"success": true}`
+- Agent loop only terminates when lifecycle tool returns `{"success": true, "scan_completed": true}` (root) or `{"success": true, "agent_completed": true}` (child). `{"success": true}` alone is not sufficient.
 - All other tool results keep agent in loop
-- Interactive mode: message without tool call HALTS execution
-- Autonomous mode: text-only turn invalid, must use lifecycle tools to terminate
-- Budget stop: broadcast wakes all parked agents for clean exit
+- Interactive mode: `wait_for_user` yields to the user; resumes on their response. Plain text output does not halt execution.
+- Autonomous mode: text-only turn invalid; must use lifecycle tools to terminate.
+- Budget policy: `stop` warns, reserves capacity for the root report, and ends the scan. `pause` parks agents before the next model call and resumes them later.
 - Crash: parent notified via `[Agent crash]` message
 
 ### Coordinator State
 
 ```
-statuses:    running | waiting | completed | stopped | crashed | failed
+statuses:    running | waiting | completed | stopped | crashed | failed | budget_paused
 parent_of:   child_id → parent_id
 metadata:    task + skills per agent
 runtimes:    SDK Session + asyncio Task + stream + wake Event
 ```
 
 - All mutations behind async lock
-- Atomic JSON snapshot on every state change → enables resume
+- Atomic JSON snapshot: written to a temp file, then renamed into place → enables resume
+- Parent notices use prefixes: `[Agent crash]`, `[Agent failed]`, `[Agent stopped]`, `[Agent completed]`, `[Agent stalled]`
 - Message passing: append to target's SDK Session, increment pending, set wake Event
 
 ---
@@ -160,7 +160,8 @@ Skills are split across a cache boundary. Shared always-on skills render before 
 | `create_note` / `list_notes` / `get_note` / `update_note` / `delete_note` | Scan-wide, persisted to notes.json |
 | `create_agent` | Spawn child with task + skills |
 | `send_message_to_agent` | Inter-agent communication |
-| `wait_for_message` | Block until response or timeout |
+| `wait_for_user` | Yield to user in interactive mode; resumes on user response |
+| `wait_for_agents` | Block until specified child agents complete |
 | `stop_agent` | Cancel agent |
 | `view_agent_graph` | See current agent tree |
 | `finish_scan` | Root-only lifecycle terminator |
@@ -313,6 +314,6 @@ description: One-line summary
 5. **Skills capped at 5/agent** — focus over breadth
 6. **Lifecycle tools gate termination** — no premature exit
 7. **Atomic JSON snapshots** — resumable scans
-8. **Budget stop broadcast** — clean shutdown for all agents
+8. **Budget stop/pause policy** — `stop` ends scan after reserving root capacity; `pause` parks agents and resumes later
 9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `.agents/skills/coordination/scope_and_modes.md` for this project's WhiteHat / Engagement / Lab mode rules.
 10. **PoC or it didn't happen** — every finding needs working proof

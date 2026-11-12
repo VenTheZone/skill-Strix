@@ -72,8 +72,7 @@ Before creating agents:
 Complex findings warrant specialized subagents:
 - Discovery agent finds potential vulnerability
 - Validation agent confirms exploitability
-- Reporting agent documents with reproduction steps
-- Fix agent provides remediation (if needed)
+- Reporting agent documents with reproduction steps (and files the fix inline for whitebox targets)
 
 **Resource Efficiency**
 
@@ -82,11 +81,24 @@ Complex findings warrant specialized subagents:
 - Use message passing only when essential (requests/answers, critical handoffs)
 - Prefer batched updates over routine status messages
 
+## Threat Model
+
+One shared threat model exists per scan. Use `get_threat_model` to read it, `save_threat_model` to write the initial body, and `amend_threat_model` to append new entries without overwriting. A second `save_threat_model` call replaces the body. Agents that discover new attack surfaces should amend rather than replace.
+
+Tool contracts and outcome details are in `.agents/skills/coordination/run_state.md`.
+
+## Coverage Reconciliation
+
+Before invoking `finish_scan`, reconcile coverage across all agents. Each attack surface identified during scope decomposition should have a coverage record. `finish_scan` still returns success when coverage is empty or contains `needs_follow_up` rows, but it adds a `coverage_warning` to the result. Resolve or acknowledge uncovered surfaces before finish.
+
+Coverage tool contracts and the five outcome values are in `.agents/skills/coordination/run_state.md`.
+
 ## Completion
 
 When all agents report completion:
 
 1. Collect and deduplicate findings across agents
-2. Assess overall security posture
-3. Compile executive summary with prioritized recommendations
-4. Invoke finish tool with final report
+2. Reconcile coverage; address or acknowledge any `coverage_warning`
+3. Assess overall security posture
+4. Compile executive summary with prioritized recommendations
+5. Invoke `finish_scan` with final report
