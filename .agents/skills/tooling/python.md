@@ -94,3 +94,11 @@ For iterative exploit work, put code in a file:
 ```bash
 pip install <package>      # standard pip, no sandbox paths needed
 ```
+
+## How to run a test
+
+- Spray trial-heavy classes (SQLi, XSS, XXE, SSRF, auth, deserialization) from a script. Do not walk those payloads by hand in the browser. A later step builds the PoC from the spray hits.
+- A proxy or tool error page is not target behavior. Identify it by its title or markup before you read it as a result.
+- Do not put a recognizable handle (an agent name, a tool name, or the word "pentest") in the User-Agent, headers, payloads, or inputs.
+- A long-running command writes its output to a file. Read that file back. Do not hold the command on the shell.
+- When a bypass depends on a specific version, search and fetch that version's docs or advisory before you use a memorized payload.

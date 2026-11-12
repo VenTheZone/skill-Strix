@@ -311,6 +311,10 @@ agent-browser --session b fill @e1 "bob@test.com"
 `AGENT_BROWSER_SESSION=myapp` sets the default session for the current
 shell.
 
+When several agents share a browser, each agent runs with its own named session (`--session <agent-name>`).
+The default shared browser means another agent's navigation invalidates your element refs.
+Close the session when done.
+
 ### Mock network requests
 
 ```bash
