@@ -22,7 +22,7 @@ At startup, `strix/core/inputs.py` builds the authorized-target list from `scan_
 - `repository` — a remote git repository
 - `local_code` — a local directory; triggers whitebox mode
 - `web_application` — an HTTP/HTTPS web target
-- `ip_address` — a host or CIDR range
+- `ip_address` — a host address
 - `api_spec` — an OpenAPI or Postman spec; each declared base URL is also added as a `web_application` entry
 
 User-supplied files are labeled as data, not as targets. A mounted directory with no matching target entry is a working directory, not an asset to assess.

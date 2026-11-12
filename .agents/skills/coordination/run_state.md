@@ -9,15 +9,15 @@ Two coordination tool families — threat model and coverage — maintain shared
 
 ## Threat Model
 
-One threat model exists per scan. It is mirrored under the run directory and is readable by every agent.
+One threat model exists **per target per scan**. It is kept in memory and mirrored to the run directory, so a resumed scan reloads it; other scans never read it. Every agent can read it.
 
 ### Tools
 
-- `get_threat_model` — reads the current model body for the scan
-- `save_threat_model` — writes the initial body; a second call replaces the body entirely
-- `amend_threat_model` — appends new entries to the existing body without overwriting it
+- `get_threat_model(target)` — reads the current model body for the named target
+- `save_threat_model(target, content)` — writes the initial body for that target; a second call replaces the body **and clears all amendments**
+- `amend_threat_model(target, addendum)` — appends a new entry to the existing body without overwriting it
 
-Agents that discover new attack surfaces during a scan should use `amend_threat_model` rather than `save_threat_model`. Use `save_threat_model` only to establish the initial model or to replace a stale one intentionally. Target-name normalization (identity snap) is described in `scope_and_modes.md`.
+Agents that discover new attack surfaces during a scan should use `amend_threat_model` rather than `save_threat_model`. Use `save_threat_model` only to establish the initial model or to fold accumulated amendments back in intentionally. Target-name normalization (identity snap) is described in `scope_and_modes.md`.
 
 ---
 
@@ -37,9 +37,9 @@ Each attack surface identified during a scan should have a coverage record befor
 |---|---|---|
 | `reported` | A finding was filed for this surface | No |
 | `no_issue_found` | The surface was assessed; no vulnerability found | No |
-| `ruled_out` | The surface was excluded from assessment | Yes |
-| `not_applicable` | The surface does not apply to this target | Yes |
-| `needs_follow_up` | Assessment is incomplete or inconclusive | Yes |
+| `ruled_out` | A specific candidate was disproved by counterevidence — the evidence must name the control that makes it safe, at a location, and confirm it runs on every attacker-reachable path | Yes |
+| `not_applicable` | This risk cannot apply here (e.g. no XML parsing on a surface, so no XXE); evidence must explain why | Yes |
+| `needs_follow_up` | Plausible but unresolved: the candidate could not be confirmed and no ruling-out control could be named; evidence must name the gap (missing credentials, unreachable service, unconfirmed reachability) | Yes |
 
 `ruled_out`, `not_applicable`, and `needs_follow_up` require an evidence string. Entries without evidence are rejected.
 

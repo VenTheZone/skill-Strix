@@ -83,9 +83,7 @@ Complex findings warrant specialized subagents:
 
 ## Threat Model
 
-One shared threat model exists per scan. Use `get_threat_model` to read it, `save_threat_model` to write the initial body, and `amend_threat_model` to append new entries without overwriting. A second `save_threat_model` call replaces the body. Agents that discover new attack surfaces should amend rather than replace.
-
-Tool contracts and outcome details are in `.agents/skills/coordination/run_state.md`.
+One threat model exists per target per scan. Use `get_threat_model(target)` to read it. Agents that discover new attack surfaces should call `amend_threat_model`; a second `save_threat_model(target, content)` replaces the body and clears all amendments. Full tool contracts in `run_state.md`.
 
 ## Coverage Reconciliation
 
