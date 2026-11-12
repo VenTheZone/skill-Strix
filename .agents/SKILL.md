@@ -66,27 +66,14 @@ runtimes:    SDK Session + asyncio Task + stream + wake Event
 
 ### Format
 
-```yaml
----
-name: skill-name
-description: One-line description
----
+Skill files are markdown with a YAML frontmatter block. Frontmatter is any string-valued map; the only reserved key beyond `name` and `description` is `template: jinja`, which causes the body to be rendered as a Jinja template before injection. Files without that key are injected literally — any `{{ }}` they contain is kept as-is.
 
-# Skill Title
-
-## Attack Surface
-...
-## Key Vulnerabilities
-...
-## Testing Methodology
-...
-## Validation
-...
-```
-
-- YAML frontmatter: `name` + `description` only
-- Body: markdown, free structure but follows consistent section pattern
 - File location: `skills/<category>/<name>.md`
+- Names may be qualified (`category/name`) or bare. A bare name that resolves to two files is rejected as ambiguous.
+
+### Extra Directories
+
+A registered extra directory is searched before the built-in skill tree. A file at `<extra_dir>/<category>/<name>.md` shadows the packaged skill at the same relative path. Shadowing is by path, not by name.
 
 ### Categories
 
@@ -101,24 +88,29 @@ description: One-line description
 | `reconnaissance` | Attack surface mapping, enumeration |
 | `custom` | Community-contributed, source-aware SAST |
 
-Internal (not user-selectable): `scan_modes`, `coordination`
+Internal (not user-selectable): `scan_modes`, `coordination`, `analysis`
 
 ### Skill Resolution Order
 
-1. Caller-requested skills
-2. `scan_modes/<mode>` — always injected
-3. `tooling/agent_browser` — always (shell + browser CLI)
-4. `tooling/python` — always (Python via exec_command)
-5. `coordination/root_agent` — root only
-6. Whitebox: `coordination/source_aware_whitebox` + `custom/source_aware_sast`
+The skills below are assembled in this order for every agent invocation. The cap of 5 applies only to the names the caller passes; always-injected skills are additional and are not counted against that limit.
 
-All deduped. Max 5 skills per agent.
+1. Caller-requested skills (max 5)
+2. `scan_modes/<mode>` — depth mode, always
+3. `scan_modes/diff` — injected on top of the depth mode when diff scope is active
+4. `tooling/agent_browser` — always
+5. `tooling/python` — always
+6. `analysis/counterevidence` — always
+7. `analysis/severity_calibration` — always
+8. `coordination/root_agent` — root agent only
+9. Whitebox only: `coordination/source_aware_whitebox`, `custom/source_aware_sast`, `analysis/source_aware_discovery`, `analysis/fix_verification`
 
-### Injection
+All entries are deduplicated after assembly.
 
-- Skills loaded → frontmatter stripped → body passed as template vars
-- Rendered into `<skill_name>body</skill_name>` XML blocks in system prompt
-- On-demand: `load_skill` tool returns body inline as tool result
+### System Prompt Injection
+
+Skills are split across a cache boundary. Shared always-on skills render before `<cache_point>`. Caller-requested skills render after it. The scope block renders last. Each skill body is wrapped in an XML tag named after the skill: `<skill_name>…</skill_name>`.
+
+- On-demand: `load_skill` tool returns the skill body in the tool result and does not modify the system prompt
 - Permanent: pass `skills=[...]` to `create_agent`
 
 ---
