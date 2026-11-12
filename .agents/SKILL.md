@@ -9,7 +9,7 @@ description: Autonomous AI penetration testing methodology — multi-agent orche
 
 Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents share one container and `/workspace`; each agent has its own terminal; the browser is shared unless `--session` is passed.
 
-Before applying any mode rules, read `scope_and_modes.md` — it defines the WhiteHat / Engagement / Lab operating modes and describes how upstream scope mechanisms work.
+Before applying any mode rules, read `scope_and_modes.md` — it defines the WhiteHat / Engagement / Lab operating modes and describes how upstream scope mechanisms work. For per-target engagement output (findings, attack chains, confirmed exploits, captured material), follow `target_workflow.md` and copy the `.agents/templates/Targets/` skeleton.
 
 Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 

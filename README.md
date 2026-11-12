@@ -11,6 +11,8 @@ Strix is an open-source AI pentesting tool with multi-agent orchestration, skill
 | File | Purpose |
 |------|---------|
 | `.agents/SKILL.md` | Universal skill — orchestration patterns, scan modes, tool integration, adapter table |
+| `.agents/skills/` | 50+ skill files — playbooks, coordination (`scope_and_modes.md`, `run_state.md`, `target_workflow.md`), scan modes |
+| `.agents/templates/Targets/` | Per-target workspace skeleton — findings, attack-chain, exploits, captured; copy into engagement workspace |
 | `README.md` | This file |
 | `.gitignore` | Excludes local strix source clone from repo |
 
