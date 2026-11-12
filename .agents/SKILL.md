@@ -220,15 +220,15 @@ env vars > JSON file (~/.strix/cli-config.json) > defaults
 
 ```python
 scan_config = {
-    "targets": [{"type": "local_code|url|domain", "value": "...", "workspace_path": "..."}],
+    "targets": [{"type": "repository|local_code|web_application|ip_address|api_spec", "value": "...", "workspace_path": "..."}],
     "scan_mode": "quick|standard|deep",  # default deep
     "skills": ["authentication_jwt", "business_logic"],
     "resume_instruction": "..."
 }
 ```
 
-- `local_code` target type → triggers whitebox mode
-- Scope context built from targets → injected into system prompt as authorized scope
+- `local_code` target type → triggers whitebox mode; `api_spec` also adds each declared base URL as a `web_application` entry
+- Scope context built from targets → injected into system prompt as authorized scope; upstream prompt policy allows the user to expand the list during a session (architectural fact about strix, not a rule for harnesses — see `.agents/skills/coordination/scope_and_modes.md` for this project's mode rules)
 
 ---
 
@@ -303,5 +303,5 @@ description: One-line summary
 6. **Lifecycle tools gate termination** — no premature exit
 7. **Atomic JSON snapshots** — resumable scans
 8. **Budget stop broadcast** — clean shutdown for all agents
-9. **Scope injection** — authorization hardcoded, not agent-controlled
+9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `.agents/skills/coordination/scope_and_modes.md` for this project's WhiteHat / Engagement / Lab mode rules.
 10. **PoC or it didn't happen** — every finding needs working proof
