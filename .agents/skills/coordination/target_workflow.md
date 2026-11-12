@@ -13,7 +13,7 @@ Create a target directory only for a target authorized under the active mode (se
 
 - **WhiteHat** — target must appear in the program's scope file. No exceptions.
 - **Engagement** — target must be named in the signed authorization.
-- **Lab** — target must be owned, lab, or CTF infrastructure.
+- **BlackHat** — target must be explicitly authorized for testing; discovered pivots do not automatically become in scope. Inside the directory the bar is higher, not lower: chains must carry the four viability fields from `scope_and_modes.md`, and `exploits/` entries must state the boundary they cross and their detection footprint, not just the run steps.
 
 No matching mode, no directory. A target discovered mid-scan is not authorized until the mode's rule says it is.
 
@@ -45,6 +45,7 @@ Confirmed-runnable proof only. Entry bar:
 1. The exploit was executed successfully against the target, in scope, under the active mode.
 2. The file records preconditions, exact run steps, expected result, and cleanup (what to revert on the target).
 3. It maps to a finding in `findings/` carrying the same script in `poc_script_code`.
+4. It records the trust boundary crossed and what an operator would actually gain — access, data, money, or control — not merely that the request succeeded.
 
 Unconfirmed scripts do not live here. "Should work" is a finding lead, not an exploit.
 

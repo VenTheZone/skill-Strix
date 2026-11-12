@@ -1,9 +1,9 @@
 #!/bin/sh
-# new-engagement.sh <name> --mode whitehat|engagement|lab
+# new-engagement.sh <name> --mode whitehat|engagement|blackhat
 # Scaffolds an engagement workspace from the bundled template.
 set -eu
 
-usage() { echo "usage: $0 <name> --mode whitehat|engagement|lab" >&2; exit 2; }
+usage() { echo "usage: $0 <name> --mode whitehat|engagement|blackhat" >&2; exit 2; }
 
 [ "${1:-}" ] || usage
 NAME=$1; shift
@@ -15,9 +15,9 @@ while [ $# -gt 0 ]; do
     *) usage ;;
   esac
 done
-# hat aliases map onto the three modes
-case $MODE in white) MODE=whitehat ;; gray) MODE=engagement ;; black) MODE=lab ;; esac
-case $MODE in whitehat|engagement|lab) ;; *) usage ;; esac
+# Hat aliases map onto operating modes.
+case $MODE in white) MODE=whitehat ;; gray) MODE=engagement ;; black) MODE=blackhat ;; esac
+case $MODE in whitehat|engagement|blackhat) ;; *) usage ;; esac
 [ -e "$NAME" ] && { echo "error: $NAME exists" >&2; exit 1; }
 
 TEMPLATE=$(CDPATH='' cd -- "$(dirname -- "$0")/engagement" && pwd)

@@ -13,7 +13,7 @@ Strix is an open-source AI pentesting tool with multi-agent orchestration, skill
 | `.agents/SKILL.md` | Universal skill — orchestration patterns, scan modes, tool integration, adapter table |
 | `.agents/skills/` | 50+ skill files — playbooks, coordination (`scope_and_modes.md`, `run_state.md`, `target_workflow.md`), scan modes |
 | `.agents/templates/engagement/` | Full engagement workspace skeleton — scope.md, Targets/, notes/, loot/, reports/, logs/ |
-| `.agents/templates/new-engagement.sh` | Scaffolds an engagement: `new-engagement.sh <name> --mode whitehat\|engagement\|lab` |
+| `.agents/templates/new-engagement.sh` | Scaffolds an engagement: `new-engagement.sh <name> --mode whitehat\|engagement\|blackhat` |
 | `README.md` | This file |
 | `.gitignore` | Excludes local strix source clone from repo |
 
@@ -55,6 +55,10 @@ cp -r skill-Strix/.agents/ /your/project/.agents/
 # Or read standalone as methodology reference
 cat skill-Strix/.agents/SKILL.md
 ```
+
+### Operating modes
+
+`whitehat` follows a program's rules; `engagement` is a scoped assessment; `blackhat` (`black`) is adversary emulation — modeling a paid intruder, pricing the cheapest credible path to impact, engineering exploits against live authorized targets, and reporting what would have caught it. Black changes technique and priority, never the authorization boundary: every mode requires a filled `scope.md`, and a target outside it is refused. These are project prompt conventions, not upstream Strix flags or a tool-level enforcement mechanism.
 
 ## Source
 

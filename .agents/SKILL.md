@@ -9,7 +9,7 @@ description: Autonomous AI penetration testing methodology — multi-agent orche
 
 Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents share one container and `/workspace`; each agent has its own terminal; the browser is shared unless `--session` is passed.
 
-Before applying any mode rules, read `scope_and_modes.md` — it defines the WhiteHat / Engagement / Lab operating modes and describes how upstream scope mechanisms work. For end-to-end engagement flow, follow `engagement_lifecycle.md`; scaffold a workspace with `.agents/templates/new-engagement.sh <name> --mode whitehat|engagement|lab`. For per-target output (findings, attack chains, confirmed exploits, captured material), follow `target_workflow.md`.
+Before applying any mode rules, read `scope_and_modes.md` — it defines the WhiteHat / Engagement / BlackHat operating modes and describes how upstream scope mechanisms work. For end-to-end engagement flow, follow `engagement_lifecycle.md`; scaffold a workspace with `.agents/templates/new-engagement.sh <name> --mode whitehat|engagement|blackhat`. For per-target output (findings, attack chains, confirmed exploits, captured material), follow `target_workflow.md`.
 
 Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 
@@ -335,5 +335,5 @@ template: jinja   # optional — omit unless the body uses Jinja templating
 6. **Lifecycle tools gate termination** — no premature exit
 7. **Atomic JSON snapshots** — resumable scans
 8. **Budget stop/pause policy** — `stop` ends scan after reserving root capacity; `pause` parks agents and resumes later
-9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `scope_and_modes.md` for this project's WhiteHat / Engagement / Lab mode rules.
+9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `scope_and_modes.md` for this project's WhiteHat / Engagement / BlackHat mode rules.
 10. **PoC or it didn't happen** — every finding needs working proof

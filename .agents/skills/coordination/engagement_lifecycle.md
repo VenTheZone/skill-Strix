@@ -13,7 +13,8 @@ Fill `scope.md` at the workspace root: mode, targets, exclusions, authorization 
 
 - **WhiteHat**: targets come from the program's published scope file; program rules (rate limits, prohibited techniques) are copied into `scope.md`.
 - **Engagement**: targets and techniques come from the signed authorization; the document reference and assessment window are recorded.
-- **Lab**: targets are owned/lab/CTF infrastructure; state the ownership basis.
+- **BlackHat**: record authorization, targets and identities, permitted techniques, limits, window, contact, and stop conditions. Resolve missing details with the operator before testing.
+- **BlackHat**: also record the *objective* and the *actor* being emulated — what the owner most fears losing (tenant data, money movement, production control plane, signing keys) and which threat actor is the yardstick. Objectives are not prefilled by the assessment; they are agreed with the owner, and they set the priority order for every later phase.
 
 **Gate**: no filled `scope.md`, no recon. Discovered assets are not scope until the mode's rule admits them.
 
@@ -23,21 +24,27 @@ Map the attack surface: hosts, ports, apps, endpoints, technologies, trust bound
 
 Output: `notes/recon-<target>.md`, initial threat model per target (`save_threat_model`).
 
+**BlackHat emphasis**: recon is where the adversary's advantage is built. Prioritize the estate map over the endpoint list — owned domains and their forgotten siblings, cloud account boundaries, SSO and identity providers, third parties with trust, CI/CD and artifact stores, admin and internal-only surfaces, employee and support tooling. Every asset discovered but not authorized is logged as an out-of-scope observation, without being touched.
+
 ## Phase 2 — Enumerate
 
 Turn the surface into a worklist. Every identified surface gets a coverage row (`record_coverage`) so the finish line is measurable.
 
 Output: coverage ledger populated, target directories created per `target_workflow.md`.
 
+**BlackHat emphasis**: order the worklist by expected return for the actor in `scope.md`, not by scanner severity. Identity and session issuance, cloud/IAM trust, money movement, tenant boundaries, and recovery flows outrank an isolated medium-severity injection. A surface that is reachable but yields nothing the actor wants is a `not_applicable` row with the reason stated, not a silent skip.
+
 ## Phase 3 — Exploit
 
-Prove findings. The bar is the Finding Records contract: required fields complete, `poc_description` and `poc_script_code` non-empty. Confirmed and runnable → `exploits/`; unconfirmed → stays a lead in `attack-chain/` notes.
+Prove findings. In BlackHat mode, develop and refine reproducible exploit artifacts and validate against live in-scope targets where permitted. The bar is the Finding Records contract: required fields complete, `poc_description` and `poc_script_code` non-empty. Confirmed and runnable → `exploits/`; unconfirmed → stays a lead in `attack-chain/` notes.
+
+**BlackHat emphasis**: exploit engineering, not payload substitution. When a standard payload fails, the interesting question is *why* — the parser, the normalization step, the allowlist, the framework version — and the next attempt targets that specific mechanism. Reaching for a heavier tool before understanding the block is wasted effort. Record what the control did, because that is both the bypass path and the remediation input.
 
 **Gate**: a finding without a PoC does not enter the report as a finding — it enters as `needs_follow_up`.
 
 ## Phase 4 — Escalate & Chain
 
-Combine proven findings into paths to impact: entry → access → next surface → impact. Update `attack-chain/` and amend the threat model (`amend_threat_model`).
+Combine proven findings into paths to impact: entry → access → next surface → impact. Update `attack-chain/` and amend the threat model (`amend_threat_model`). For BlackHat, continue only along authorized paths and techniques, recording timestamps and results; stop and contact the owner on unexpected impact or an out-of-scope pivot.
 
 ## Phase 5 — Capture
 
@@ -52,6 +59,7 @@ Write `reports/<target>-<date>.md` from the template in `reports/`:
 3. **Per-finding detail** — the finding file's content: description, impact, evidence, PoC, remediation.
 4. **Captured secrets rotation list** — every secret in `captured/`, with a rotation recommendation.
 5. **Coverage summary** — every ledger row: assessed, ruled out with evidence, or open follow-up.
+6. **BlackHat, when applicable** — research timeline, exploit preconditions and results, attack paths, limitations, and cleanup. Written for the defender: for each path, the cheapest entry point, what the actor would take first, the detection footprint, and the control that would have broken the chain. Rank paths by cost-to-attacker, not by severity score — that ranking is what the owner budgets against.
 
 **Gate**: every coverage row is `reported`, `no_issue_found`, `ruled_out`, or `not_applicable` — or the report names the `needs_follow_up` rows explicitly. An empty "we looked" is not a result.
 
