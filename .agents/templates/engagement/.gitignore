@@ -1,0 +1,5 @@
+# Engagement hygiene — secrets and working data never enter git.
+# Bare patterns match at any depth below this file.
+captured/
+loot/
+logs/

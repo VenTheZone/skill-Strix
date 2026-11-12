@@ -28,7 +28,7 @@ Targets/
     └── captured/        # secrets and proof material — handle with care
 ```
 
-Skeleton: copy `.agents/templates/Targets/` into the engagement workspace and rename `example-target`.
+Skeleton: `.agents/templates/engagement/Targets/` — copied into the engagement workspace by `new-engagement.sh`; add a target with `cp -r Targets/example-target Targets/<slug>`.
 
 ## findings/
 
@@ -59,7 +59,7 @@ Juicy material: credentials, usernames, API keys, tokens, session artifacts, con
 
 ## Lifecycle
 
-0. Ensure `*/captured/` is in the workspace root `.gitignore` (append `.agents/templates/Targets/.gitignore`) — before any capture can land.
+0. Ensure `captured/` is in the workspace root `.gitignore` (present by default in the engagement template) — before any capture can land.
 1. Mode check passes → copy skeleton, rename to target slug.
 2. During the scan: findings land as they are confirmed; chains updated as connections emerge.
 3. Before finish: every `exploits/` entry maps to a finding; every finding's coverage is recorded (`record_coverage`); `captured/` contents are listed in the report.

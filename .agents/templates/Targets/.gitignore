@@ -1,3 +1,0 @@
-# Engagement data hygiene — append to your workspace ROOT .gitignore.
-# Pattern is location-safe: correct both from repo root and from Targets/.
-*/captured/
