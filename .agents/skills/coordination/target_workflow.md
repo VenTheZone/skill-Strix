@@ -34,6 +34,8 @@ Skeleton: `.agents/templates/engagement/Targets/` — copied into the engagement
 
 One file per finding, named `<nn>-<short-slug>.md`. Same issue stays one file — see "One issue, one file" in SKILL.md. Content follows "Finding-record required fields" in `.agents/SKILL.md`: all required fields, with `poc_description` and `poc_script_code` non-empty. A finding without a PoC is a lead, not a finding — keep leads in `attack-chain/` notes until proven.
 
+Submitting to a bounty platform: search the program's disclosed reports for duplicates first — a known issue pays nothing. Map the finding file onto the platform's required fields. Keep the raw exchanges attached.
+
 ## attack-chain/
 
 Markdown or diagram files describing how findings combine: entry point → privilege or access gained → next surface → impact. Each node references a file in `findings/` by name. This is the narrative layer over the threat model (`run_state.md`): the threat model is per-target shared state, the attack chain is the human-readable path through it.

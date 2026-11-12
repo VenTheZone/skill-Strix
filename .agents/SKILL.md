@@ -68,7 +68,7 @@ runtimes:    SDK Session + asyncio Task + stream + wake Event
 
 ### Format
 
-Skill files are markdown with a YAML frontmatter block. Frontmatter is any string-valued map; the only reserved key beyond `name` and `description` is `template: jinja`, which causes the body to be rendered as a Jinja template before injection. Files without that key are injected literally — any `{{ }}` they contain is kept as-is.
+Skill files are markdown with a YAML frontmatter block. Frontmatter is any string-valued map; the only reserved key beyond `name` and `description` is `template: jinja`, which causes the body to be rendered as a Jinja template before injection. Files without that key are injected literally — any `{{ }}` they contain is kept as-is. On a harness with no Jinja renderer, keep the `coverage_tools`-true branch and drop the `{% %}` tags when loading a skill that carries them.
 
 - File location: `skills/<category>/<name>.md`
 - Names may be qualified (`category/name`) or bare. A bare name that resolves to two files is rejected as ambiguous.
