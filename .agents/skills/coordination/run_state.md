@@ -46,17 +46,18 @@ Each attack surface identified during a scan should have a coverage record befor
 
 | Outcome | Meaning | Evidence required |
 |---|---|---|
+| `open` | Surface enumerated, not yet tested | No |
 | `reported` | A finding was filed for this surface | No |
 | `no_issue_found` | The surface was assessed; no vulnerability found | No |
 | `ruled_out` | A specific candidate was disproved by counterevidence — the evidence must name the control that makes it safe, at a location, and confirm it runs on every attacker-reachable path | Yes |
 | `not_applicable` | This risk cannot apply here (e.g. no XML parsing on a surface, so no XXE); evidence must explain why | Yes |
 | `needs_follow_up` | Plausible but unresolved: the candidate could not be confirmed and no ruling-out control could be named; evidence must name the gap (missing credentials, unreachable service, unconfirmed reachability) | Yes |
 
-`ruled_out`, `not_applicable`, and `needs_follow_up` require an evidence string. Entries without evidence are rejected.
+`ruled_out`, `not_applicable`, and `needs_follow_up` require an evidence string. Entries without evidence are rejected. `open` is not a closure outcome, so the closure set stays the other five.
 
 ### Finish Behavior
 
-`finish_scan` returns `success: true` even when coverage entries are missing or when rows carry `needs_follow_up`. When either condition is present, the result includes `coverage_warning`. The root agent should resolve or explicitly acknowledge uncovered surfaces before invoking `finish_scan`.
+`finish_scan` returns `success: true` and completes even when coverage entries are missing or when rows carry `needs_follow_up`. When either condition is present, the result includes `coverage_warning`. The root holds the report under the stop-worklist gate in `root_agent.md` Completion.
 
 ---
 

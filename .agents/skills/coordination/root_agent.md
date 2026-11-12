@@ -99,9 +99,9 @@ One threat model exists per target per scan. Use `get_threat_model(target)` to r
 
 ## Coverage Reconciliation
 
-Before invoking `finish_scan`, reconcile coverage across all agents. Each attack surface identified during scope decomposition should have a coverage record. `finish_scan` still returns success when coverage is empty or contains `needs_follow_up` rows, but it adds a `coverage_warning` to the result. Resolve or acknowledge uncovered surfaces before finish.
+Before invoking `finish_scan`, reconcile coverage across all agents. Each attack surface identified during scope decomposition should have a coverage record. `finish_scan` still returns success when coverage is empty or contains `needs_follow_up` rows, but it adds a `coverage_warning` to the result. Uncovered surfaces and open proof gaps are worklist lines; they block the report outside quick mode and wind-down.
 
-Coverage tool contracts and the five outcome values are in `.agents/skills/coordination/run_state.md`.
+Coverage tool contracts are in `.agents/skills/coordination/run_state.md`: status `open`, plus the five closure outcomes.
 
 ## Before you stop
 
@@ -124,7 +124,7 @@ On wind-down, when the operator signals time or cost is short, stop opening new 
 When all agents report completion:
 
 1. Collect and deduplicate findings across agents
-2. Reconcile coverage; address or acknowledge any `coverage_warning`
+2. Reconcile coverage. Hold the report while the stop worklist is non-empty, per the gate above.
 3. Assess overall security posture
 4. Compile executive summary with prioritized recommendations
-5. Invoke `finish_scan` with final report
+5. Invoke `finish_scan` with the final report only after the hold in step 2 lifts.

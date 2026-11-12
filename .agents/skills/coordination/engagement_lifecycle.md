@@ -72,7 +72,7 @@ Write `reports/<target>-<date>.md` from the template in `reports/`. Follow the c
 5. **Coverage summary** — every ledger row: assessed, ruled out with evidence, or open follow-up.
 6. **BlackHat, when applicable** — research timeline, exploit preconditions and results, attack paths, limitations, and cleanup. Written for the defender: for each path, the cheapest entry point, what the actor would take first, the detection footprint, and the control that would have broken the chain. Rank paths by cost-to-attacker, not by severity score — that ranking is what the owner budgets against.
 
-**Gate**: every coverage row is `reported`, `no_issue_found`, `ruled_out`, or `not_applicable` — or the report names the `needs_follow_up` rows explicitly. An empty "we looked" is not a result.
+**Gate**: every coverage row is `reported`, `no_issue_found`, `ruled_out`, or `not_applicable` — or the report names the `needs_follow_up` rows explicitly. An empty "we looked" is not a result. Outside quick mode and wind-down, rows still `needs_follow_up` or `open` block the report; in quick mode or after wind-down they may be named and carried.
 
 ## Phase 7 — Cleanup
 

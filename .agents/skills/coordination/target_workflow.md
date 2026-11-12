@@ -62,6 +62,6 @@ Juicy material: credentials, usernames, API keys, tokens, session artifacts, con
 
 0. Ensure `captured/` is in the workspace root `.gitignore` (present by default in the engagement template) — before any capture can land.
 1. Mode check passes → copy skeleton, rename to target slug.
-2. During the scan, write each item to disk as it is confirmed, not at the end: the finding, the chain, and the captured-material list. Update the coverage row as its outcome is confirmed (`record_coverage`). A long run's context gets compacted and only files survive. On resume, read notes, threat model, coverage ledger, findings, attack-chain notes, captured-material list before retesting.
+2. During the scan, write each item to disk as it is confirmed, not at the end: the finding, the chain, and the captured-material list. Opening a row at enumerate uses `record_coverage` with status `open`. Outcome updates use `update_coverage` (changes an existing entry), not `record_coverage` (creates a new one). A long run's context gets compacted and only files survive. On resume, read notes, threat model, coverage ledger, findings, attack-chain notes, captured-material list before retesting.
 3. Before finish: every `exploits/` entry maps to a finding; the report lists `captured/` contents.
 4. After the report: hand over per the engagement terms, then wipe `captured/` — the client rotates, you do not keep secrets.
