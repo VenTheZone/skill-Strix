@@ -166,6 +166,17 @@ Skills are split across a cache boundary. Shared always-on skills render before 
 | `finish_scan` | Root-only lifecycle terminator |
 | `agent_finish` | Child-only lifecycle terminator |
 
+#### Finding-record required fields
+
+`create_vulnerability_report` calls `_validate_required_text` before accepting a finding. Two fields must be non-empty strings or the report is rejected:
+
+- `poc_description` — human-readable explanation of how the vulnerability was demonstrated.
+- `poc_script_code` — the reproduction artifact (script, command sequence, or request chain).
+
+A finding also carries a `scope` field for the CVSS v3 metric. That field takes the single letter `U` (Unchanged) or `C` (Changed). It is a CVSS metric, not the engagement-scope concept used elsewhere in the skill.
+
+`create_dependency_report` is a second report class alongside `create_vulnerability_report`. It records third-party dependency findings using the same validation pipeline.
+
 ### Proxy Tools (Caido integration)
 
 | Tool | Purpose |
