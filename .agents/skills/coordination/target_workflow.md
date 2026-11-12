@@ -32,7 +32,7 @@ Skeleton: `.agents/templates/engagement/Targets/` — copied into the engagement
 
 ## findings/
 
-One file per finding, named `<nn>-<short-slug>.md`. Same issue stays one file — see "One issue, one file" in SKILL.md. Content follows the reporting contract (see SKILL.md, Finding Records): all required fields, with `poc_description` and `poc_script_code` non-empty. A finding without a PoC is a lead, not a finding — keep leads in `attack-chain/` notes until proven.
+One file per finding, named `<nn>-<short-slug>.md`. Same issue stays one file — see "One issue, one file" in SKILL.md. Content follows "Finding-record required fields" in `.agents/SKILL.md`: all required fields, with `poc_description` and `poc_script_code` non-empty. A finding without a PoC is a lead, not a finding — keep leads in `attack-chain/` notes until proven.
 
 ## attack-chain/
 

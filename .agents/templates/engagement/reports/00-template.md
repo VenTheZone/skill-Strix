@@ -23,7 +23,7 @@ One section per finding — copy of `findings/<nn>-<slug>.md`: description, impa
 
 ## 5. Coverage
 
-Every ledger row: `reported` / `no_issue_found` / `ruled_out` (with evidence) / `not_applicable` / `needs_follow_up` (named explicitly).
+Every ledger row: `reported`, `no_issue_found`, `ruled_out`, `not_applicable`, `needs_follow_up`, `open`. `needs_follow_up` and `open` rows are carried into the report named, per the worklist rule.
 
 ## 6. BlackHat research results (when applicable)
 

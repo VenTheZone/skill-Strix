@@ -45,7 +45,7 @@ Root Agent (orchestrator, not tester)
 - All other tool results keep agent in loop
 - Interactive mode: `wait_for_user` yields to the user; resumes on their response. Plain text output does not halt execution.
 - Autonomous mode: text-only turn invalid; must use lifecycle tools to terminate.
-- Budget policy: `stop` warns, reserves capacity for the root report, and ends the scan. `pause` parks agents before the next model call and resumes them later.
+- Budget policy: `stop` warns, reserves capacity for the root report, and ends the scan. The report is still gated by the worklist rule (quick or wind-down exceptions only). `pause` parks agents before the next model call and resumes them later.
 - Crash: parent notified via `[Agent crash]` message
 
 ### Coordinator State
@@ -349,6 +349,6 @@ template: jinja   # optional — omit unless the body uses Jinja templating
 5. **Caller-requested skills capped at 5/agent** — always-injected skills are additional and do not count against this limit
 6. **Lifecycle tools gate termination** — no premature exit
 7. **Atomic JSON snapshots** — resumable scans
-8. **Budget stop/pause policy** — `stop` ends scan after reserving root capacity; `pause` parks agents and resumes later
+8. **Budget stop/pause policy** — `stop` ends the scan and reserves root report capacity; the report is still gated by the worklist rule (quick or wind-down exceptions only). `pause` parks agents and resumes later
 9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `scope_and_modes.md` for this project's WhiteHat / Engagement / BlackHat mode rules.
 10. **PoC or it didn't happen** — every finding needs working proof

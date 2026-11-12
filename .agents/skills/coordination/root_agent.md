@@ -99,27 +99,29 @@ One threat model exists per target per scan. Use `get_threat_model(target)` to r
 
 ## Coverage Reconciliation
 
-Before invoking `finish_scan`, reconcile coverage across all agents. Each attack surface identified during scope decomposition should have a coverage record. `finish_scan` still returns success when coverage is empty or contains `needs_follow_up` rows, but it adds a `coverage_warning` to the result. Uncovered surfaces and open proof gaps are worklist lines; they block the report outside quick mode and wind-down.
+Before invoking `finish_scan`, reconcile coverage across all agents. Each attack surface identified during scope decomposition should have a coverage record. `finish_scan` still returns success when coverage is empty or contains `needs_follow_up` rows, but it adds a `coverage_warning` to the result. A surface with no coverage row is "skill class assigned with no coverage row". A row at `needs_follow_up` or `open` is "open proof gap" (coverage row `needs_follow_up` or `open`). The other line types are "confirmed finding without a chain entry" and "child that returned without a list". Quick mode: no report gate beyond the operator's own review; all worklist lines may be carried into the report named. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`. Otherwise all four line types block the report.
 
 Coverage tool contracts are in `.agents/skills/coordination/run_state.md`: status `open`, plus the five closure outcomes.
 
 ## Before you stop
 
-Ending a turn is not finishing the engagement. Before you stop or write the report, write a worklist. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
+Ending a turn is not finishing the engagement. Before you stop or write the report, write a worklist. Worklist lines are: open proof gap (coverage row `needs_follow_up` or `open`); confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
 
-Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
+Quick mode: no report gate beyond the operator's own review; all worklist lines may be carried into the report named. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`. Otherwise all four line types block the report.
 
-In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance.
+In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`.
 
 A child that returns with no open items and no coverage row has not cleared its area. Treat it as unexamined.
 
 ## Completion
 
-Do not write the final report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
+Do not write the final report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines. Wind-down does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`.
 
-Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
+Worklist lines are: open proof gap (coverage row `needs_follow_up` or `open`); confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
 
-On wind-down, when the operator signals time or cost is short, stop opening new lines of work. File what is already confirmed, then finish.
+Quick mode: no report gate beyond the operator's own review; all worklist lines may be carried into the report named. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`. Otherwise all four line types block the report.
+
+On wind-down, when the operator signals time or cost is short, stop opening new lines of work. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`.
 
 When all agents report completion:
 

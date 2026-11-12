@@ -38,7 +38,7 @@ Output: coverage ledger populated, target directories created per `target_workfl
 
 ## Phase 3 — Exploit
 
-Prove findings. In BlackHat mode, develop and refine reproducible exploit artifacts and validate against live in-scope targets where permitted. The bar is the Finding Records contract: required fields complete, `poc_description` and `poc_script_code` non-empty. Confirmed and runnable → `exploits/`; unconfirmed → stays a lead in `attack-chain/` notes.
+Prove findings. In BlackHat mode, develop and refine reproducible exploit artifacts and validate against live in-scope targets where permitted. The bar is "Finding-record required fields" in `.agents/SKILL.md`: required fields complete, `poc_description` and `poc_script_code` non-empty. Confirmed and runnable → `exploits/`; unconfirmed → stays a lead in `attack-chain/` notes.
 
 **BlackHat emphasis**: exploit engineering, not payload substitution. When a standard payload fails, the interesting question is *why* — the parser, the normalization step, the allowlist, the framework version — and the next attempt targets that specific mechanism. Reaching for a heavier tool before understanding the block is wasted effort. Record what the control did, because that is both the bypass path and the remediation input.
 
@@ -56,12 +56,14 @@ Collect minimum proof of impact into `captured/`: the credential, the key, the s
 
 **Finish preflight.** The root clears this list before writing the report:
 
-1. No report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
-2. In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance.
-3. An assigned skill class with zero coverage rows is unexamined, not clean. It is a worklist line (so it blocks the report) outside quick mode and wind-down only.
+1. No report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines. Wind-down does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`.
+2. In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`.
+3. An assigned skill class with zero coverage rows is unexamined, not clean ("skill class assigned with no coverage row"). Wind-down waives this line type.
 4. Zero confirmed findings is stated as a sentence plus the coverage ledger — never an implied clean bill.
 
-Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
+Worklist lines are: open proof gap (coverage row `needs_follow_up` or `open`); confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
+
+Quick mode: no report gate beyond the operator's own review; all worklist lines may be carried into the report named. Wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry". It does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list". Those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`. Otherwise all four line types block the report.
 
 Write `reports/<target>-<date>.md` from the template in `reports/`. Follow the copy-and-strip note in `00-template.md`.
 
@@ -69,10 +71,10 @@ Write `reports/<target>-<date>.md` from the template in `reports/`. Follow the c
 2. **Findings table** — severity per finding (severity bands per the closure skills), status, affected surface.
 3. **Per-finding detail** — the finding file's content: description, impact, evidence, PoC, remediation.
 4. **Captured secrets rotation list** — every secret in `captured/`, with a rotation recommendation.
-5. **Coverage summary** — every ledger row: assessed, ruled out with evidence, or open follow-up.
+5. **Coverage summary** — every ledger row: `reported`, `no_issue_found`, `ruled_out`, `not_applicable`, `needs_follow_up`, `open`. `needs_follow_up` and `open` rows are carried into the report named, per the worklist rule.
 6. **BlackHat, when applicable** — research timeline, exploit preconditions and results, attack paths, limitations, and cleanup. Written for the defender: for each path, the cheapest entry point, what the actor would take first, the detection footprint, and the control that would have broken the chain. Rank paths by cost-to-attacker, not by severity score — that ranking is what the owner budgets against.
 
-**Gate**: every coverage row is `reported`, `no_issue_found`, `ruled_out`, or `not_applicable` — or the report names the `needs_follow_up` rows explicitly. An empty "we looked" is not a result. Outside quick mode and wind-down, rows still `needs_follow_up` or `open` block the report; in quick mode or after wind-down they may be named and carried.
+**Gate**: every coverage row is `reported`, `no_issue_found`, `ruled_out`, or `not_applicable`; `open` and `needs_follow_up` follow the worklist rule — quick mode has no report gate beyond the operator's own review and all worklist lines may be carried into the report named, wind-down waives only "skill class assigned with no coverage row" and "confirmed finding without a chain entry" and does not waive "open proof gap" (status `needs_follow_up` or `open`) or "child that returned without a list" (those still block the report, and if the operator insists, they are carried into the report named, as `needs_follow_up`), and otherwise all four line types block the report. An empty "we looked" is not a result.
 
 ## Phase 7 — Cleanup
 
