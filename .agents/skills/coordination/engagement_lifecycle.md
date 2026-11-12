@@ -18,7 +18,7 @@ Fill `scope.md` at the workspace root: mode, targets, exclusions, authorization 
 
 **Gate**: no filled `scope.md`, no recon. Discovered assets are not scope until the mode's rule admits them.
 
-**Resume.** On a resumed session, read notes, the threat model, the coverage ledger, and findings before retesting anything.
+**Resume.** On a resumed session, read notes, threat model, coverage ledger, findings, attack-chain notes, captured-material list before retesting anything.
 
 ## Phase 1 — Recon
 
@@ -30,7 +30,7 @@ Output: `notes/recon-<target>.md`, initial threat model per target (`save_threat
 
 ## Phase 2 — Enumerate
 
-Turn the surface into a worklist. Every identified surface gets a coverage row (`record_coverage`) so the finish line is measurable.
+Turn the surface into a worklist. Open a coverage row for every identified surface, status open (`record_coverage`), so the finish line is measurable.
 
 Output: coverage ledger populated, target directories created per `target_workflow.md`.
 
@@ -56,14 +56,14 @@ Collect minimum proof of impact into `captured/`: the credential, the key, the s
 
 **Finish preflight.** The root clears this list before writing the report:
 
-1. No report while any child is still running, waiting, or paused. Stop it first and record what it did not finish.
-2. In non-quick mode, try each plausibly related combination of confirmed findings as a chain. State it unrelated, with reason, only after that try, or in quick mode or wind-down.
-3. An assigned skill class with zero coverage rows is unexamined, not clean.
+1. No report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
+2. In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance.
+3. An assigned skill class with zero coverage rows is unexamined, not clean. It is a worklist line (so it blocks the report) outside quick mode and wind-down only.
 4. Zero confirmed findings is stated as a sentence plus the coverage ledger — never an implied clean bill.
 
-The preflight also requires the root's "Before you stop" worklist in `root_agent.md` to be empty or explicit, covering open proof gaps and children that returned without a list.
+Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
 
-Write `reports/<target>-<date>.md` from the template in `reports/`:
+Write `reports/<target>-<date>.md` from the template in `reports/`. Follow the copy-and-strip note in `00-template.md`.
 
 1. **Executive summary** — what was at risk, what was proven, in plain language.
 2. **Findings table** — severity per finding (severity bands per the closure skills), status, affected surface.

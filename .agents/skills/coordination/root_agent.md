@@ -69,7 +69,7 @@ Each agent should have a specific, measurable goal. Vague objectives lead to sco
 
 **Spawn Brief**
 
-Every child prompt names who the child is and its one job. Inherited or parent history is background, not the task: do not continue the parent's last action. Name which target's threat model and notes to read first, and what recon has already mapped.
+Every child prompt names who the child is and its one job. Inherited or parent history is background, not the task: do not continue the parent's last action. The recon child and any child spawned before a threat model exists are exempt; every later child reads the model (and any amendments) first. Name the notes to read, and what recon has already mapped.
 
 **Avoid Duplication**
 
@@ -91,7 +91,7 @@ Complex findings warrant specialized subagents:
 - Terminate agents when objectives are met or no longer relevant
 - Use message passing only when essential (requests/answers, critical handoffs)
 - Prefer batched updates over routine status messages
-- Read-only calls may batch; writes, scans, spawns, and finish go one at a time.
+- Only read-only state reads (notes, threat model, coverage, findings) may batch. Anything touching the target goes to a child, one at a time.
 
 ## Threat Model
 
@@ -105,18 +105,19 @@ Coverage tool contracts and the five outcome values are in `.agents/skills/coord
 
 ## Before you stop
 
-Ending a turn is not finishing the engagement. Before you stop or write the report, write a worklist. Empty, or every line explicit:
+Ending a turn is not finishing the engagement. Before you stop or write the report, write a worklist. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
 
-- every open proof gap
-- every confirmed finding not yet tried as a chain
-- every specialist skill class assigned with no coverage row
-- every child that returned without such a list
+Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
 
-If any line is non-empty and the scan mode is not quick: keep going, or spawn a child whose whole task is that line. An operator wind-down signal overrides this: stop opening lines, file what is confirmed, finish. A child that returns with no open items and no coverage row has not cleared its area. Treat it as unexamined.
+In non-quick mode every confirmed finding gets a chain entry: either a combination it was tried in, or a one-line "no chain: <reason>" recorded after the attempt. Plausibility is decided by the attempt, not skipped in advance.
+
+A child that returns with no open items and no coverage row has not cleared its area. Treat it as unexamined.
 
 ## Completion
 
-Do not write the final report while any child is still running, waiting, or paused. After a forced stop, record what the child did not finish as its own worklist line or follow-up, and only then proceed to the report.
+Do not write the final report while any child is still running, waiting, or paused. A forced stop of a child records its unfinished work as worklist lines, then the root keeps going (the report stays blocked) unless quick or wind-down.
+
+Write the report only when the stop worklist is empty, or the scan mode is quick, or the operator has sent a wind-down signal. Any other non-empty worklist line blocks the report. Worklist lines are: open proof gap; confirmed finding without a chain entry; skill class assigned with no coverage row; child that returned without a list.
 
 On wind-down, when the operator signals time or cost is short, stop opening new lines of work. File what is already confirmed, then finish.
 

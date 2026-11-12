@@ -62,7 +62,7 @@ What was not tested, what was out of scope, and what remains a hypothesis rather
 
 Accounts created, records altered, artifacts planted, and their removal status. Nothing in this section may remain open at handover.
 
-**Note.** The report body contains no workspace paths, agent or child names, proxy/exchange ids, or tool/harness names.
+**Note.** The report is built by copying the finding files, then stripping workspace paths, agent names, proxy/exchange ids, and harness/tool names. The raw HTTP exchange stays (method, URL, headers, body, status, excerpt) with ids removed.
 
 **Note.** If no findings are confirmed, say so in one sentence and point to the coverage ledger.
 

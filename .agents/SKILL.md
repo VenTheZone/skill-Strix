@@ -193,7 +193,7 @@ A finding also carries a `scope` field for the CVSS v3 metric. That field takes 
 
 Before creating `findings/<nn>-<slug>.md`, search the findings directory for the same issue. If that file exists, stronger proof or a higher-impact chain edits it and records why; do not create a second file. If a finding is disproved, delete the file. Do not keep it as a zero-severity "false positive" report.
 
-The finding file contains the proving request and the baseline request as raw exchanges: method, URL, relevant headers, body, response status, and a response excerpt. A status code alone is not evidence. Name `http_exchange_ids` only where the reader's tool supplies one; this harness has no proxy id store.
+HTTP-validated findings only: the finding file contains the proving request and the baseline request as raw exchanges: method, URL, relevant headers, body, response status, and a response excerpt. A status code alone is not evidence. Name `http_exchange_ids` only where the reader's tool supplies one; this harness has no proxy id store. Non-HTTP findings (code, config, cloud) cite their own evidence instead.
 
 ### Proxy Tools (Caido integration)
 
