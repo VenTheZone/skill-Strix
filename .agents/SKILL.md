@@ -189,6 +189,23 @@ A finding also carries a `scope` field for the CVSS v3 metric. That field takes 
 | `view_sitemap_entry` | Inspect sitemap detail |
 | `scope_rules` | View/manage scan scope |
 
+### MCP Tools
+
+Four-step lookup order for any MCP-connected service:
+
+1. `list_mcps` — enumerate configured MCP connections.
+2. `search_mcp_tools` — find tools across those connections by keyword.
+3. `get_mcp_tool_schema` — retrieve the input schema for a specific tool.
+4. `call_mcp` — invoke the tool with validated arguments.
+
+If `search_mcp_tools` returns nothing, fall back to `describe_mcp` to inspect the server directly.
+
+`McpConnectionConfig` fields:
+
+- `transport` — `http` or `stdio`.
+- `api_key` — optional bearer auth token; field is `repr=False` and never logged.
+- `allowed_tools` — `None` exposes every tool the server lists; a list of tool names restricts to that list.
+
 ### Sandbox Tools (Docker-bound)
 
 - `shell` — command execution in container
