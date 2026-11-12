@@ -180,15 +180,20 @@ A finding also carries a `scope` field for the CVSS v3 metric. That field takes 
 
 `create_dependency_report` is a second report class alongside `create_vulnerability_report`. It records third-party dependency findings; dependency records use a separate CVE/rating validation path and are not subject to `_validate_required_text`.
 
-##### Analysis, fix, and HTTP gates
+##### Analysis and fix gates
 
-`create_vulnerability_report` also rejects a finding that fails the gates below. `create_dependency_report` is exempt from the analysis fields and from `http_exchange_ids`. A dependency location that carries `fix_after` still needs `fix_verification`.
+`create_vulnerability_report` also rejects a finding that fails the gates below. `create_dependency_report` is exempt from the analysis fields. A dependency location that carries `fix_after` still needs `fix_verification`.
 
 - `counterevidence` — required on every vulnerability report. What would disprove the finding, and why that case does not hold.
 - `severity_change_conditions` — required on every vulnerability report. What evidence would move the severity up or down.
 - `confidence_rationale` — required when `confidence` is not `high`. The gap that keeps confidence below the top level.
 - `fix_verification` — required when any affected code location carries a `fix_after`. The ordered gates the proposed fix was checked against.
-- `http_exchange_ids` — required when the proof is an HTTP exchange. The proving exchange id(s) and the baseline (normal-request) exchange id(s). The tool checks that each id exists in the live proxy project before that id counts as evidence.
+
+##### One issue, one file
+
+Before creating `findings/<nn>-<slug>.md`, search the findings directory for the same issue. If that file exists, stronger proof or a higher-impact chain edits it and records why; do not create a second file. If a finding is disproved, delete the file. Do not keep it as a zero-severity "false positive" report.
+
+The finding file contains the proving request and the baseline request as raw exchanges: method, URL, relevant headers, body, response status, and a response excerpt. A status code alone is not evidence. Name `http_exchange_ids` only where the reader's tool supplies one; this harness has no proxy id store.
 
 ### Proxy Tools (Caido integration)
 

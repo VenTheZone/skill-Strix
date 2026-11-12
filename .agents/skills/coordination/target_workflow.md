@@ -32,7 +32,7 @@ Skeleton: `.agents/templates/engagement/Targets/` — copied into the engagement
 
 ## findings/
 
-One file per finding, named `<nn>-<short-slug>.md`. Content follows the reporting contract (see SKILL.md, Finding Records): all required fields, with `poc_description` and `poc_script_code` non-empty. A finding without a PoC is a lead, not a finding — keep leads in `attack-chain/` notes until proven.
+One file per finding, named `<nn>-<short-slug>.md`. Same issue stays one file — see "One issue, one file" in SKILL.md. Content follows the reporting contract (see SKILL.md, Finding Records): all required fields, with `poc_description` and `poc_script_code` non-empty. A finding without a PoC is a lead, not a finding — keep leads in `attack-chain/` notes until proven.
 
 ## attack-chain/
 
@@ -62,6 +62,6 @@ Juicy material: credentials, usernames, API keys, tokens, session artifacts, con
 
 0. Ensure `captured/` is in the workspace root `.gitignore` (present by default in the engagement template) — before any capture can land.
 1. Mode check passes → copy skeleton, rename to target slug.
-2. During the scan: findings land as they are confirmed; chains updated as connections emerge.
-3. Before finish: every `exploits/` entry maps to a finding; every finding's coverage is recorded (`record_coverage`); `captured/` contents are listed in the report.
+2. During the scan, write each item to disk as it is confirmed, not at the end: the finding, the chain, the captured-material list, and the coverage row (`record_coverage`). A long run's context gets compacted and only files survive. On resume, read those files before retesting.
+3. Before finish: every `exploits/` entry maps to a finding; the report lists `captured/` contents.
 4. After the report: hand over per the engagement terms, then wipe `captured/` — the client rotates, you do not keep secrets.
