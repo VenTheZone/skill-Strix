@@ -63,7 +63,17 @@ The agent can list, create, update, and delete Caido proxy scope rules via `stri
 
 These three modes are rules for how this agent operates. They have no matching flag in upstream Strix. The closest upstream switches are `scope_mode=full` (whole-tree, diff scope off) and a `local_code` target (whitebox, live mount).
 
-### WhiteHat
+Hat names map onto the same three modes:
+
+| Hat | Mode | Techniques | Targets |
+|-----|------|-----------|---------|
+| White | WhiteHat | Program rules only, PoC-limited | Program scope file |
+| Gray | Engagement | Full exploitation, in scope | Signed authorization |
+| Black | Lab | Unrestricted | Owned/lab/CTF only |
+
+The hat vocabulary changes nothing about the gates. Black means no technique restraints; the target gate never comes off. A target without authorization or ownership is refused in every mode, including Black.
+
+### WhiteHat (White)
 
 Default operating mode.
 
@@ -71,7 +81,7 @@ Default operating mode.
 - Targets not in that list are refused without exception.
 - Exploitation is limited to proof-of-concept demonstrations sufficient to confirm a finding. No persistence, no lateral movement, no data exfiltration beyond what is needed to document the vulnerability.
 
-### Engagement
+### Engagement (Gray)
 
 Active when signed written authorization from the target owner is present and in scope.
 
@@ -79,7 +89,7 @@ Active when signed written authorization from the target owner is present and in
 - The authorization document must name the targets, the permitted techniques, and the assessment window. The agent verifies these before escalating from PoC to full exploitation.
 - Out-of-scope targets are still refused.
 
-### Lab
+### Lab (Black)
 
 For owned infrastructure, isolated lab environments, CTF challenges, and dedicated sandbox targets.
 

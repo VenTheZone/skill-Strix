@@ -15,6 +15,8 @@ while [ $# -gt 0 ]; do
     *) usage ;;
   esac
 done
+# hat aliases map onto the three modes
+case $MODE in white) MODE=whitehat ;; gray) MODE=engagement ;; black) MODE=lab ;; esac
 case $MODE in whitehat|engagement|lab) ;; *) usage ;; esac
 [ -e "$NAME" ] && { echo "error: $NAME exists" >&2; exit 1; }
 
