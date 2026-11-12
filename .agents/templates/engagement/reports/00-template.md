@@ -62,4 +62,8 @@ What was not tested, what was out of scope, and what remains a hypothesis rather
 
 Accounts created, records altered, artifacts planted, and their removal status. Nothing in this section may remain open at handover.
 
+**Note.** The report body contains no workspace paths, agent or child names, proxy/exchange ids, or tool/harness names.
+
+**Note.** If no findings are confirmed, say so in one sentence and point to the coverage ledger.
+
 Delete this notice and rename to `<target>-<date>.md` when writing a real report.

@@ -18,6 +18,8 @@ Fill `scope.md` at the workspace root: mode, targets, exclusions, authorization 
 
 **Gate**: no filled `scope.md`, no recon. Discovered assets are not scope until the mode's rule admits them.
 
+**Resume.** On a resumed session, read notes, the threat model, the coverage ledger, and findings before retesting anything.
+
 ## Phase 1 — Recon
 
 Map the attack surface: hosts, ports, apps, endpoints, technologies, trust boundaries. Passive first; active recon only as the mode allows.
@@ -51,6 +53,15 @@ Combine proven findings into paths to impact: entry → access → next surface 
 Collect minimum proof of impact into `captured/`: the credential, the key, the session artifact — enough to demonstrate, never more. Rules in `target_workflow.md` apply without exception: never committed, encrypted at rest, listed for rotation.
 
 ## Phase 6 — Report
+
+**Finish preflight.** The root clears this list before writing the report:
+
+1. No report while any child is still running, waiting, or paused. Stop it first and record what it did not finish.
+2. In non-quick mode, try each plausibly related combination of confirmed findings as a chain. State it unrelated, with reason, only after that try, or in quick mode or wind-down.
+3. An assigned skill class with zero coverage rows is unexamined, not clean.
+4. Zero confirmed findings is stated as a sentence plus the coverage ledger — never an implied clean bill.
+
+The preflight also requires the root's "Before you stop" worklist in `root_agent.md` to be empty or explicit, covering open proof gaps and children that returned without a list.
 
 Write `reports/<target>-<date>.md` from the template in `reports/`:
 
