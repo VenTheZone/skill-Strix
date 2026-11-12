@@ -5,11 +5,22 @@ description: Threat-model and coverage tool contracts, and closure-skill injecti
 
 # Run State
 
-Two coordination tool families — threat model and coverage — maintain shared scan state across agents. Two closure skills are injected on every agent; two more are added for whitebox agents only. This file documents tool names, outcome enums, and injection points only.
+Two coordination tool families — threat model and coverage — maintain shared scan state across agents. Two closure skills are injected on every agent; two more are added for whitebox agents only. This file documents the threat-model contract, tool names, outcome enums, and injection points.
 
 ## Threat Model
 
-One threat model exists **per target per scan**. It is kept in memory and mirrored to the run directory, so a resumed scan reloads it; other scans never read it. Every agent can read it.
+One threat model exists **per target per scan**, and it is kept current. It is kept in memory and mirrored to the run directory, so a resumed scan reloads it; other scans never read it. Every agent can read it.
+
+A model has four sections. A model missing a section is incomplete — complete it before relying on it.
+
+- **Overview**
+- **Trust Boundaries and Assumptions**
+- **Attack Surface and Attacker Stories**
+- **Severity Calibration** — rating for this target; band rules stay in the injected `analysis/severity_calibration` skill
+
+Black-box order: recon first, then write the model from what actually answered. Mark each claim inferred or observed. Do not wait for a perfect picture before testing.
+
+Amend, don't overwrite. Later agents amend the existing model with new evidence. The root reads amendments before writing the report.
 
 ### Tools
 

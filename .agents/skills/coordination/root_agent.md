@@ -37,6 +37,10 @@ Structure agents by function:
 - Technology fingerprinting
 - Attack surface mapping
 
+**Establish the threat model**
+
+After recon, make sure each target has a threat model. Point each child spawned for that target at it. Read amendments before the report. Follow the contract in `run_state.md`.
+
 **Vulnerability Assessment**
 - Injection testing (SQLi, XSS, command injection)
 - Authentication and session analysis
