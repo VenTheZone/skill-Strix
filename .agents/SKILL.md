@@ -7,7 +7,9 @@ description: Autonomous AI penetration testing methodology — multi-agent orche
 
 ## Overview
 
-Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents run in sandboxed Docker with shared filesystem, proxy, and notes.
+Pattern for running AI-driven penetration tests. Multi-agent hierarchy: root orchestrator delegates to specialist agents, each with 1-5 domain skills. Agents share one container and `/workspace`; each agent has its own terminal; the browser is shared unless `--session` is passed.
+
+Before applying any mode rules, read `scope_and_modes.md` — it defines the WhiteHat / Engagement / Lab operating modes and describes how upstream scope mechanisms work. For end-to-end engagement flow, follow `engagement_lifecycle.md`; scaffold a workspace with `.agents/templates/new-engagement.sh <name> --mode whitehat|engagement|lab`. For per-target output (findings, attack chains, confirmed exploits, captured material), follow `target_workflow.md`.
 
 Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 
@@ -21,43 +23,43 @@ Source: [usestrix/strix](https://github.com/usestrix/strix) · Apache 2.0
 Root Agent (orchestrator, not tester)
 ├── Discovery Agent (surface mapping)
 ├── Validation Agent (PoC per finding)
-├── Reporting Agent (vuln report + remediation)
-└── [Whitebox only] Fixing Agent (patch generation)
+└── Reporting Agent (vuln report + remediation)
 ```
 
 - **Root**: coordinates, delegates, tracks todos/notes, monitors graph, writes final report. Never tests directly.
 - **Children**: one job per agent. Spawn reactively as surfaces discovered, not upfront.
 - **Blackbox chain**: Discovery → Validation → Reporting (3 agents/vuln)
-- **Whitebox chain**: + Fixing (4 agents/vuln)
+- **Whitebox chain**: same 3-agent chain; Reporting Agent files the fix inline. No fourth agent is added.
 
 ### Agent Creation
 
 - Single factory function handles root and child. Differ only in `is_root` flag.
 - **Root gets**: base tools + `finish_scan` lifecycle tool
 - **Child gets**: base tools + `agent_finish` lifecycle tool
-- **Base tools** (~30): think, load_skill, todos CRUD, notes CRUD, web_search, vuln reporting, proxy tools, agent graph tools (create_agent, send_message, wait_for_message, stop_agent)
+- **Base tools** (~30): think, load_skill, todos CRUD, notes CRUD, web_search, vuln reporting, proxy tools, agent graph tools (create_agent, send_message_to_agent, wait_for_user, wait_for_agents, stop_agent)
 - **Sandbox tools**: shell + filesystem (emitted by SDK capabilities, bound to Docker session)
 
 ### Lifecycle Control
 
-- Agent loop only terminates when lifecycle tool returns `{"success": true}`
+- Agent loop only terminates when lifecycle tool returns `{"success": true, "scan_completed": true}` (root) or `{"success": true, "agent_completed": true}` (child). `{"success": true}` alone is not sufficient.
 - All other tool results keep agent in loop
-- Interactive mode: message without tool call HALTS execution
-- Autonomous mode: text-only turn invalid, must use lifecycle tools to terminate
-- Budget stop: broadcast wakes all parked agents for clean exit
+- Interactive mode: `wait_for_user` yields to the user; resumes on their response. Plain text output does not halt execution.
+- Autonomous mode: text-only turn invalid; must use lifecycle tools to terminate.
+- Budget policy: `stop` warns, reserves capacity for the root report, and ends the scan. `pause` parks agents before the next model call and resumes them later.
 - Crash: parent notified via `[Agent crash]` message
 
 ### Coordinator State
 
 ```
-statuses:    running | waiting | completed | stopped | crashed | failed
+statuses:    running | waiting | completed | stopped | crashed | failed | budget_paused
 parent_of:   child_id → parent_id
 metadata:    task + skills per agent
 runtimes:    SDK Session + asyncio Task + stream + wake Event
 ```
 
 - All mutations behind async lock
-- Atomic JSON snapshot on every state change → enables resume
+- Atomic JSON snapshot: written to a temp file, then renamed into place → enables resume
+- Parent notices use prefixes: `[Agent crash]`, `[Agent failed]`, `[Agent stopped]`, `[Agent completed]`, `[Agent stalled]`
 - Message passing: append to target's SDK Session, increment pending, set wake Event
 
 ---
@@ -66,27 +68,14 @@ runtimes:    SDK Session + asyncio Task + stream + wake Event
 
 ### Format
 
-```yaml
----
-name: skill-name
-description: One-line description
----
+Skill files are markdown with a YAML frontmatter block. Frontmatter is any string-valued map; the only reserved key beyond `name` and `description` is `template: jinja`, which causes the body to be rendered as a Jinja template before injection. Files without that key are injected literally — any `{{ }}` they contain is kept as-is.
 
-# Skill Title
-
-## Attack Surface
-...
-## Key Vulnerabilities
-...
-## Testing Methodology
-...
-## Validation
-...
-```
-
-- YAML frontmatter: `name` + `description` only
-- Body: markdown, free structure but follows consistent section pattern
 - File location: `skills/<category>/<name>.md`
+- Names may be qualified (`category/name`) or bare. A bare name that resolves to two files is rejected as ambiguous.
+
+### Extra Directories
+
+A registered extra directory is searched before the built-in skill tree. A file at `<extra_dir>/<category>/<name>.md` shadows the packaged skill at the same relative path. Shadowing is by path, not by name.
 
 ### Categories
 
@@ -101,24 +90,29 @@ description: One-line description
 | `reconnaissance` | Attack surface mapping, enumeration |
 | `custom` | Community-contributed, source-aware SAST |
 
-Internal (not user-selectable): `scan_modes`, `coordination`
+Internal (not user-selectable): `scan_modes`, `coordination`, `analysis`
 
 ### Skill Resolution Order
 
-1. Caller-requested skills
-2. `scan_modes/<mode>` — always injected
-3. `tooling/agent_browser` — always (shell + browser CLI)
-4. `tooling/python` — always (Python via exec_command)
-5. `coordination/root_agent` — root only
-6. Whitebox: `coordination/source_aware_whitebox` + `custom/source_aware_sast`
+The skills below are assembled in this order for every agent invocation. The cap of 5 applies only to the names the caller passes; always-injected skills are additional and are not counted against that limit.
 
-All deduped. Max 5 skills per agent.
+1. Caller-requested skills (max 5)
+2. `scan_modes/<mode>` — depth mode, always
+3. `scan_modes/diff` — injected on top of the depth mode when diff scope is active
+4. `tooling/agent_browser` — always
+5. `tooling/python` — always
+6. `analysis/counterevidence` — always
+7. `analysis/severity_calibration` — always
+8. `coordination/root_agent` — root agent only
+9. Whitebox only: `coordination/source_aware_whitebox`, `custom/source_aware_sast`, `analysis/source_aware_discovery`, `analysis/fix_verification`
 
-### Injection
+All entries are deduplicated after assembly.
 
-- Skills loaded → frontmatter stripped → body passed as template vars
-- Rendered into `<skill_name>body</skill_name>` XML blocks in system prompt
-- On-demand: `load_skill` tool returns body inline as tool result
+### System Prompt Injection
+
+Skills are split across a cache boundary. Shared always-on skills render before `<cache_point>`. Caller-requested skills render after it. The scope block renders last. Each skill body is wrapped in an XML tag named after the skill: `<skill_name>…</skill_name>`.
+
+- On-demand: `load_skill` tool returns the skill body in the tool result and does not modify the system prompt
 - Permanent: pass `skills=[...]` to `create_agent`
 
 ---
@@ -162,17 +156,29 @@ All deduped. Max 5 skills per agent.
 |------|---------|
 | `think` | Private CoT, no side effects |
 | `load_skill` | Load skill markdown on-demand |
-| `web_search` | Perplexity sonar-reasoning-pro, security-focused |
+| `web_search` | Perplexity or Exa (`auto` prefers Exa when `EXA_API_KEY` is set, falls back to Perplexity), security-focused |
 | `create_vulnerability_report` | CVSS calc, dedup, fix_before/fix_after PR suggestions |
 | `create_todo` / `list_todos` / `update_todo` / `mark_todo_done` / `delete_todo` | Per-agent, persisted to todos.json |
 | `create_note` / `list_notes` / `get_note` / `update_note` / `delete_note` | Scan-wide, persisted to notes.json |
 | `create_agent` | Spawn child with task + skills |
 | `send_message_to_agent` | Inter-agent communication |
-| `wait_for_message` | Block until response or timeout |
+| `wait_for_user` | Yield to user in interactive mode; resumes on user response |
+| `wait_for_agents` | Block until specified child agents complete |
 | `stop_agent` | Cancel agent |
 | `view_agent_graph` | See current agent tree |
 | `finish_scan` | Root-only lifecycle terminator |
 | `agent_finish` | Child-only lifecycle terminator |
+
+#### Finding-record required fields
+
+`create_vulnerability_report` calls `_validate_required_text` before accepting a finding. All 10 fields in `_REQUIRED_FIELDS` must be non-empty strings or the report is rejected: `title`, `description`, `impact`, `target`, `technical_analysis`, `evidence`, `assumptions`, `remediation_steps`, `poc_description`, and `poc_script_code`. The two PoC fields are the core of the contract:
+
+- `poc_description` — human-readable explanation of how the vulnerability was demonstrated.
+- `poc_script_code` — the reproduction artifact (script, command sequence, or request chain).
+
+A finding also carries a `scope` field for the CVSS v3 metric. That field takes the single letter `U` (Unchanged) or `C` (Changed). It is a CVSS metric, not the engagement-scope concept used elsewhere in the skill.
+
+`create_dependency_report` is a second report class alongside `create_vulnerability_report`. It records third-party dependency findings; dependency records use a separate CVE/rating validation path and are not subject to `_validate_required_text`.
 
 ### Proxy Tools (Caido integration)
 
@@ -183,7 +189,24 @@ All deduped. Max 5 skills per agent.
 | `repeat_request` | Replay with modifications |
 | `list_sitemap` | View discovered endpoints |
 | `view_sitemap_entry` | Inspect sitemap detail |
-| `scope_rules` | View/manage scan scope |
+| `scope_rules` | Manage Caido proxy capture filters (which requests the proxy records); independent from the scan-config target list — see `scope_and_modes.md` |
+
+### MCP Tools
+
+Four-step lookup order for any MCP-connected service:
+
+1. `list_mcps` — enumerate configured MCP connections.
+2. `search_mcp_tools(connection="<name>", query="<capability>")` — find tools on that connection by keyword.
+3. `get_mcp_tool_schema` — retrieve the input schema for a specific tool.
+4. `call_mcp` — invoke the tool with validated arguments.
+
+If `search_mcp_tools` returns nothing, fall back to `describe_mcp` to inspect the server directly.
+
+`McpConnectionConfig` fields:
+
+- `transport` — `http` or `stdio`.
+- `auth` — `BearerAuth | None`; `BearerAuth` carries a `token` field (`repr=False`, excluded from logs and reprs).
+- `allowed_tools` — `None` exposes every tool the server lists; a list of tool names restricts to that list.
 
 ### Sandbox Tools (Docker-bound)
 
@@ -215,7 +238,7 @@ env vars > JSON file (~/.strix/cli-config.json) > defaults
 
 - **LLM**: model, api_key, api_base, reasoning_effort (none/minimal/low/medium/high/xhigh), timeout (300s)
 - **Runtime**: Docker image, backend, max_local_copy_mb (1024)
-- **Integrations**: perplexity_api_key
+- **Integrations**: perplexity_api_key, exa_api_key, web_search_provider (`auto` | `perplexity` | `exa`; `auto` prefers Exa when `EXA_API_KEY` is set)
 - **Telemetry**: enabled (default true)
 
 ### Model Routing
@@ -228,15 +251,15 @@ env vars > JSON file (~/.strix/cli-config.json) > defaults
 
 ```python
 scan_config = {
-    "targets": [{"type": "local_code|url|domain", "value": "...", "workspace_path": "..."}],
+    "targets": [{"type": "repository|local_code|web_application|ip_address|api_spec", "value": "...", "workspace_path": "..."}],
     "scan_mode": "quick|standard|deep",  # default deep
     "skills": ["authentication_jwt", "business_logic"],
     "resume_instruction": "..."
 }
 ```
 
-- `local_code` target type → triggers whitebox mode
-- Scope context built from targets → injected into system prompt as authorized scope
+- `local_code` target type → triggers whitebox mode; `api_spec` also adds each declared base URL as a `web_application` entry
+- Scope context built from targets → injected into system prompt as authorized scope; upstream prompt policy allows the user to expand the list during a session (architectural fact about strix, not a rule for harnesses — see `scope_and_modes.md` for this project's mode rules)
 
 ---
 
@@ -266,7 +289,7 @@ scan_config = {
 | Strix Concept | Generic Equivalent |
 |---------------|-------------------|
 | `create_agent` | Spawn child agent/subagent |
-| `send_message` | Inter-agent message bus |
+| `send_message_to_agent` | Inter-agent message bus |
 | `agent_finish` | Lifecycle terminator (child) |
 | `finish_scan` | Lifecycle terminator (root) |
 | `load_skill` | Load domain knowledge module |
@@ -294,6 +317,7 @@ scan_config = {
 ---
 name: lowercase-hyphen-name
 description: One-line summary
+template: jinja   # optional — omit unless the body uses Jinja templating
 ---
 ```
 
@@ -307,9 +331,9 @@ description: One-line summary
 2. **One job per agent** — reactive spawning, not upfront
 3. **Errors as results, not exceptions** — keeps agent in loop
 4. **Shared state across agents** — same container, same notes
-5. **Skills capped at 5/agent** — focus over breadth
+5. **Caller-requested skills capped at 5/agent** — always-injected skills are additional and do not count against this limit
 6. **Lifecycle tools gate termination** — no premature exit
 7. **Atomic JSON snapshots** — resumable scans
-8. **Budget stop broadcast** — clean shutdown for all agents
-9. **Scope injection** — authorization hardcoded, not agent-controlled
+8. **Budget stop/pause policy** — `stop` ends scan after reserving root capacity; `pause` parks agents and resumes later
+9. **Scope injection** — prompt policy plus a scan-config list; tool calls are not checked against `authorized_targets`. See `scope_and_modes.md` for this project's WhiteHat / Engagement / Lab mode rules.
 10. **PoC or it didn't happen** — every finding needs working proof
