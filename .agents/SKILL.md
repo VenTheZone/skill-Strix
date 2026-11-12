@@ -180,6 +180,16 @@ A finding also carries a `scope` field for the CVSS v3 metric. That field takes 
 
 `create_dependency_report` is a second report class alongside `create_vulnerability_report`. It records third-party dependency findings; dependency records use a separate CVE/rating validation path and are not subject to `_validate_required_text`.
 
+##### Analysis, fix, and HTTP gates
+
+`create_vulnerability_report` also rejects a finding that fails the gates below. `create_dependency_report` is exempt from the analysis fields and from `http_exchange_ids`. A dependency location that carries `fix_after` still needs `fix_verification`.
+
+- `counterevidence` — required on every vulnerability report. What would disprove the finding, and why that case does not hold.
+- `severity_change_conditions` — required on every vulnerability report. What evidence would move the severity up or down.
+- `confidence_rationale` — required when `confidence` is not `high`. The gap that keeps confidence below the top level.
+- `fix_verification` — required when any affected code location carries a `fix_after`. The ordered gates the proposed fix was checked against.
+- `http_exchange_ids` — required when the proof is an HTTP exchange. The proving exchange id(s) and the baseline (normal-request) exchange id(s). The tool checks that each id exists in the live proxy project before that id counts as evidence.
+
 ### Proxy Tools (Caido integration)
 
 | Tool | Purpose |

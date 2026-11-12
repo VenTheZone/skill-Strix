@@ -134,6 +134,7 @@ Inside authorized scope, exploitation is *executed*, not described:
 - `poc_script_code` is a runnable artifact, not prose about one, and it lives in `findings/<nn>-<slug>.md`.
 - Preconditions, blast radius, and detection footprint are recorded in the finding alongside the PoC.
 - Capture is minimum proof only, under the rules in `target_workflow.md`.
+- HTTP-validated findings must carry the proving and baseline proxy exchange ids (`http_exchange_ids`), so evidence is tied to captured traffic, not paraphrase.
 
 Do not stop at "the endpoint returned 200." Establish what the response actually grants: which object, whose tenant, which privilege, how much data, and for how long. A finding that demonstrates a status code has not demonstrated impact.
 
