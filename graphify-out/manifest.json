@@ -1,0 +1,437 @@
+{
+  ".agents/templates/new-engagement.sh": {
+    "mtime": 1794456195.6356304,
+    "ast_hash": "b707c43088fb723b8f28186ca90cd696",
+    "semantic_hash": ""
+  },
+  "tests/test-harness-adapters.sh": {
+    "mtime": 1794560403.5839942,
+    "ast_hash": "0f969667c1429dff496ae33b370f70f5",
+    "semantic_hash": ""
+  },
+  "tests/test-new-engagement.sh": {
+    "mtime": 1794559543.6977143,
+    "ast_hash": "944f3c63b20304982c9fdfc1366ff16d",
+    "semantic_hash": ""
+  },
+  "tests/test-references.sh": {
+    "mtime": 1794559543.6977143,
+    "ast_hash": "1d73527adccb091043075620c401ef44",
+    "semantic_hash": ""
+  },
+  ".agents/SKILL.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "656b2ce2c56361400e3408e486064a56",
+    "semantic_hash": ""
+  },
+  ".agents/skills/analysis/counterevidence.md": {
+    "mtime": 1794459256.1815453,
+    "ast_hash": "b89bdc0289c8070ab8fe3947dbd29ba0",
+    "semantic_hash": ""
+  },
+  ".agents/skills/analysis/fix_verification.md": {
+    "mtime": 1794459256.1823585,
+    "ast_hash": "efd79787a0ff30660fa9b792e681ee6c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/analysis/severity_calibration.md": {
+    "mtime": 1794459256.1823585,
+    "ast_hash": "4a6f22e6cb544fa6d70503bb339f0e7e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/analysis/source_aware_discovery.md": {
+    "mtime": 1794459256.1823585,
+    "ast_hash": "6c0f98ea5049231ef644a72142deabfa",
+    "semantic_hash": ""
+  },
+  ".agents/skills/cloud/aws.md": {
+    "mtime": 1794449730.7137158,
+    "ast_hash": "490fe0701e12ea06ad91a2f4c58899cd",
+    "semantic_hash": ""
+  },
+  ".agents/skills/cloud/kubernetes.md": {
+    "mtime": 1794449730.7137942,
+    "ast_hash": "e8da0bd7ba08aa7b2d0c509e191fff5e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/engagement_lifecycle.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "49ca293fec838543d27da9cf7af2c073",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/root_agent.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "4715d4c4703d95fc111c46aaef56e073",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/run_state.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "1571762fb63b38f9b09386113fd5b256",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/scope_and_modes.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "6941d8295b14565327a2f3eb86cda83e",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/source_aware_whitebox.md": {
+    "mtime": 1794449730.7140348,
+    "ast_hash": "c9b4cff483bee58306165cfdb68fafd7",
+    "semantic_hash": ""
+  },
+  ".agents/skills/coordination/target_workflow.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "ddc522ec4f4725c4a5ba56300d61d473",
+    "semantic_hash": ""
+  },
+  ".agents/skills/custom/source_aware_sast.md": {
+    "mtime": 1794449730.7140348,
+    "ast_hash": "9540f5513aed5dfef8915bb2f06b9b70",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frameworks/django.md": {
+    "mtime": 1794449730.7140348,
+    "ast_hash": "f723a6c9bb4df2e847335e18cd82d3db",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frameworks/fastapi.md": {
+    "mtime": 1794449730.7141812,
+    "ast_hash": "a41f371bb6798965211d296cc68b540b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frameworks/nestjs.md": {
+    "mtime": 1794449730.7141812,
+    "ast_hash": "f9438e2b60135dbe59fa5d2e6f137deb",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frameworks/nextjs.md": {
+    "mtime": 1794449730.7141812,
+    "ast_hash": "37476f94e5333d04115a8f6fa108a809",
+    "semantic_hash": ""
+  },
+  ".agents/skills/protocols/graphql.md": {
+    "mtime": 1794449730.7141812,
+    "ast_hash": "c759e9082332bcdbe87494f284712f2c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/protocols/oauth.md": {
+    "mtime": 1794449730.7143722,
+    "ast_hash": "02b37b14b8fb2f1b830790157fd2f955",
+    "semantic_hash": ""
+  },
+  ".agents/skills/reconnaissance/asset_discovery.md": {
+    "mtime": 1794459256.1823585,
+    "ast_hash": "a529909970487b89748350cc9b5cacb7",
+    "semantic_hash": ""
+  },
+  ".agents/skills/reconnaissance/infrastructure_lifecycle.md": {
+    "mtime": 1794459256.1826692,
+    "ast_hash": "90770e8d5cd998709de8876680b29007",
+    "semantic_hash": ""
+  },
+  ".agents/skills/scan_modes/deep.md": {
+    "mtime": 1794449730.7143722,
+    "ast_hash": "b75024d703ae08a14a322beee5c4f4dc",
+    "semantic_hash": ""
+  },
+  ".agents/skills/scan_modes/diff.md": {
+    "mtime": 1794459256.1826692,
+    "ast_hash": "cc506f3dc85e35d95fbfbf3568c480c8",
+    "semantic_hash": ""
+  },
+  ".agents/skills/scan_modes/quick.md": {
+    "mtime": 1794449730.7144716,
+    "ast_hash": "5abb9a9f50e4fac17e0e04b766fe06b9",
+    "semantic_hash": ""
+  },
+  ".agents/skills/scan_modes/standard.md": {
+    "mtime": 1794449730.7144716,
+    "ast_hash": "594226feecb564e7d1349fe4ac90f21c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/strix-pentest/SKILL.md": {
+    "mtime": 1794559281.4412136,
+    "ast_hash": "5999eaae690349c739f2da3ce9d50992",
+    "semantic_hash": ""
+  },
+  ".agents/skills/technologies/firebase_firestore.md": {
+    "mtime": 1794449730.7144716,
+    "ast_hash": "88bd8addeeb6d318b31dd264e65c60cf",
+    "semantic_hash": ""
+  },
+  ".agents/skills/technologies/supabase.md": {
+    "mtime": 1794449730.7145936,
+    "ast_hash": "97595d0798909b1ce73b02fcb2d57e66",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/agent_browser.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "e5b80b77d81111a4ee26d95464423df6",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/ffuf.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "b00f12e6882ed460d1f636f48cfbad4c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/httpx.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "a3177cd31b7f38144d713ce53560ca62",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/katana.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "28a3e2118afec43e198db747e3aa2294",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/naabu.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "6b5a2fb0bf5c3c920c3a8fb7520d038b",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/nmap.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "052ec4212109ca9657339731a96d5f76",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/nuclei.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "3d3cad7a621f4290ea7df57b049307af",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/python.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "16f2d1a8cb1a43a746e25d4041ae1d1c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/semgrep.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "69da30c28f5b39a0e54444c7dae9937d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/sqlmap.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "086e66e037e4bfa7990024128700a44d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/tooling/subfinder.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "02f5eb3fcba1b6f923f078e6c8cca323",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/authentication_jwt.md": {
+    "mtime": 1794449730.7147298,
+    "ast_hash": "f34a0571978d84249c677b1c494f434a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/broken_function_level_authorization.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "6541a43ae0e8672da25bfa3a2126f978",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/business_logic.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "006a204f79a5eb5b4dbf735c0390717a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/csrf.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "87329c3f6dc825db9800b72ac65718f1",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/header_injection.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "f1166dd1bb7c24416e9fe4374d4a31b2",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/http_request_smuggling.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "3f039fa8428da48b10a4a70b12ae1f74",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/idor.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "d83807187f0730693d113faaf3e4217a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/information_disclosure.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "0e430946d36ab50883fe77742c41e5e3",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/insecure_deserialization.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "5476a32fcd9f5b74753c82ac2e7d2c05",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/insecure_file_uploads.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "438130e71a9a6e0a07ccdc956ee91c56",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/mass_assignment.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "7f013af8730b5b0fd9f7472e2416df95",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/nosql_injection.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "c8d69be46b25454c0d6d585234ba7540",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/open_redirect.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "88173313705a4c5f32586812f9c89076",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/path_traversal_lfi_rfi.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "6b8c7d803d205cc620fa9fd5178ff43c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/prototype_pollution.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "ac49cdf2a0a9e6041a964d96bd653f76",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/race_conditions.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "7d49dce04fdb2a12d26a17d0f895f9bb",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/rce.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "68f308eec83b19e2e4b79cefc2700512",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/sql_injection.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "9434c132082151465d3355bca72290cd",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/ssrf.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "0e3a804cb1524f24a3d92fead64b375c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/ssti.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "980f877743ac9ff2815ca5e54d16e886",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/subdomain_takeover.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "8a8e45d8d4c534fd573de55ad803b13a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/weak_password_detection.md": {
+    "mtime": 1794459256.1826692,
+    "ast_hash": "b63dd718e060cb98b94f7b3abb47b926",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/xss.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "b34cec85bdb5c0a916acd2eecc862759",
+    "semantic_hash": ""
+  },
+  ".agents/skills/vulnerabilities/xxe.md": {
+    "mtime": 1794449730.7151825,
+    "ast_hash": "bffd96485df9b66cb7aa573adccbdc67",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/README.md": {
+    "mtime": 1794455513.486393,
+    "ast_hash": "aecd605e2cfaa7d08505c6527731d5cc",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/Targets/README.md": {
+    "mtime": 1794456195.6356304,
+    "ast_hash": "1b799fd55e6bdfb91377d7d6174ab67a",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/Targets/example-target/attack-chain/00-readme.md": {
+    "mtime": 1794455513.4864838,
+    "ast_hash": "89a8c342955149039642b45dd9ad3342",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/Targets/example-target/captured/00-readme.md": {
+    "mtime": 1794455513.4864838,
+    "ast_hash": "3f14c36b5474494a7383d30d6c2294ec",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/Targets/example-target/exploits/00-readme.md": {
+    "mtime": 1794455513.4864838,
+    "ast_hash": "7149a3111bd7b65569ec99217cce323d",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/Targets/example-target/findings/00-readme.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "013338270f4f01bd907c87976cb12d45",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/reports/00-template.md": {
+    "mtime": 1794479647.2804801,
+    "ast_hash": "825db76d2fc4dc9d288b5c96eeca3c75",
+    "semantic_hash": ""
+  },
+  ".agents/templates/engagement/scope.md": {
+    "mtime": 1794456891.9066334,
+    "ast_hash": "e0aed0ec54cb6ecc909cd35bfcde8ad1",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1794559310.3741226,
+    "ast_hash": "871ba4a014ab7b06a6c8a6bcd20545f5",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1794559310.9805357,
+    "ast_hash": "dbf876ee504c4ef1e4829133734ea9ef",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1794560267.187643,
+    "ast_hash": "64effc72e333335e21277ed40849f620",
+    "semantic_hash": ""
+  },
+  "adapters/claude-code/CLAUDE.md": {
+    "mtime": 1794560272.3976564,
+    "ast_hash": "0e109068d5514c501dbc4faf9306efc3",
+    "semantic_hash": ""
+  },
+  "adapters/codex/AGENTS.md": {
+    "mtime": 1794559289.5955544,
+    "ast_hash": "073d1f36511d8b8d989d815ede6d5c56",
+    "semantic_hash": ""
+  },
+  "adapters/freebuff/AGENTS.md": {
+    "mtime": 1794560269.531649,
+    "ast_hash": "f83f5da3f37154a799148e2a3f17bd02",
+    "semantic_hash": ""
+  },
+  "adapters/hermes/AGENTS.md": {
+    "mtime": 1794560275.8816655,
+    "ast_hash": "b9e7651efecf0326bed38f75ca8d5086",
+    "semantic_hash": ""
+  },
+  "adapters/kilo/AGENTS.md": {
+    "mtime": 1794559308.5333223,
+    "ast_hash": "de2f8f8a19387d321427f8b5c4feabf6",
+    "semantic_hash": ""
+  },
+  "adapters/opencode/AGENTS.md": {
+    "mtime": 1794559518.1086843,
+    "ast_hash": "420f44c61be178d4af01c6958da91069",
+    "semantic_hash": ""
+  },
+  "adapters/pi/AGENTS.md": {
+    "mtime": 1794559297.2038221,
+    "ast_hash": "602f5ce68830c4a93c765e0143fe1812",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/bad-harness-adapter/AGENTS.md": {
+    "mtime": 1794560277.5186696,
+    "ast_hash": "1f3815bd6e9e7f422f71648f4d31389a",
+    "semantic_hash": ""
+  }
+}
